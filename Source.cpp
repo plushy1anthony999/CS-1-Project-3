@@ -71,7 +71,6 @@ int main() {
 	int beginPos;
 	int endPos;
 
-	cout << "TESTING";
 	cout << locateSequence(array, -1, "cat", beginPos, endPos) << endl;
 	cout << beginPos << endl;
 	cout << endPos << endl;
