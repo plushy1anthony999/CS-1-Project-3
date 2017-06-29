@@ -44,34 +44,40 @@ bool locateSequence(const string a[], int n, string target, int& begin, int& end
 	if (n < 0)
 		return false;
 
-	int firstMatchedStringPos = locate(a, n, target);
-	int lastMatchedStringPost = 0;
+	if(locate(a, n, target) != -1)
+		begin = locate(a, n, target);
+	else
+		return false; // No matches found using locate()
 
-	if (firstMatchedStringPos != -1)
-		lastMatchedStringPost = 
 
-	for (int i = firstMatchedStringPos; i < n; i++) {
-		if (a[i] == target) {
-			numOfMatchedStrings++;
-			if (numOfMatchedStrings == 1)
-				begin = i;
+	for (int i = begin; i < n; i++) {
+		if (a[i] == target) 
+			end = i; // Will update variable for each match, ending with the position of the last match
+	}
+
+	return true; // At least one match found
+}
+
+// Returns position of a string in the array that's <= every other string. If that string appears multiple times, return its first appearance
+int locationOfMin(const string a[], int n) {
+	if(n <= 0)
+		return -1;
+	
+	int smallestStringPos = 0;
+	
+	for(int i = 0; i < n; i++) {
+		if(a[i] < a[smallestStringPos]) {
+			smallestStringPos = i;
 		}
 	}
-
-	if (numOfMatchedStrings > 0){
-		if (numOfMatchedStrings > 1) 
-
-	}
-
-	return false; // No strings in array matched target
+	
+	return smallestStringPos;
 }
 
 int main() {
-	string array[] = { "hello", "cat", "dog" };
-	int beginPos;
-	int endPos;
+	string array[] = {"dog", "cato", "pig", "dog"};
 
-	cout << locateSequence(array, -1, "cat", beginPos, endPos) << endl;
-	cout << beginPos << endl;
-	cout << endPos << endl;
+
+	cout << locationOfMin(array, 4) << endl;
+
 }
