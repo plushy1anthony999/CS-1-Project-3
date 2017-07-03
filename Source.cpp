@@ -85,6 +85,7 @@ int moveToEnd(string a[], int n, int pos) {
 		a[i - 1] = a[i];
 	}
 	
+	return pos;
 }
 
 // TODO:
@@ -125,23 +126,29 @@ int locateDifference(const string a1[], int n1, const string a2[], int n2) {
 int eliminateDups(string a[], int n) {
 	for(int i = 0; i < n; i++) {
 		if(a[i] == a[i + 1]) {
+			cout << "Duplicate element: " << a[i] << endl;
+
 			int numOfAdjacentDuplicates = 0; // If an element has duplicates next to it, how many duplicates are next to it?
-			
-			int j = i; // Track a second copy of i so that I don't have to modify the for-loop's i
-			while(a[j] == a[j + 1]) { // When a duplicate is found, count number of duplicates
+											 // i.e. if there are 4 "dog" elements, there are 3 duplicates/extras
+	
+			// Counts duplicates from the current i value until a non-duplicate value is found
+			for (int j = i; a[j] == a[j + 1]; j++)
 				numOfAdjacentDuplicates++;
-				j++;
-			}
+
 			
-			// Number of duplicates have been found, so destroy duplicates and
-			// shift elements to the right of the duplicates left
-			for(int k = 0; k < numOfAdjacentDuplicates; k++) {
-				a[i + numOfAdjacentDuplicates + k] = a[i + numOfAdjacentDuplicates + k + 1];
-			}
+
+			cout << "numOfAdjacentDuplicates: " << numOfAdjacentDuplicates << endl;
+			i += numOfAdjacentDuplicates - 1; // Makes for loop just to the element after all the duplicates
+			
+			//// Number of duplicates have been found, so destroy duplicates and
+			//// shift elements to the right of the duplicates remaining
+			//for(int k = 0; k < numOfAdjacentDuplicates; k++) {
+			//	a[i + numOfAdjacentDuplicates + k] = a[i + numOfAdjacentDuplicates + k + 1];
+			//}
 		}
 	}
-	
-	return 
+
+	return 0; // TODO: fix return value
 }
 
 int main() {
@@ -161,11 +168,13 @@ int main() {
 	// string array1[] = {"dog", "bunny", "pig", "duck", "bear", "goldfish"};
 	// string array2[] = {"dog", "bunny", "pig", "duck", "bear", "goldfish"};
 	
-	// cout << locateDifference(array1, 6, array2, 6) << endl;
-	string array3[] = {"dog", "dog", "dog", "cat", "bunny", "dog", "dog", "cat", "cat", "bunny"};
-	cout << eliminateDups(array3, 4) << endl;
-	for(int i = 0; i < 10; i++) {
+	// cout << locateDifference(array1, 6, array2, 6) << endl;.
+
+	string array3[] = {"dog", "cat", "dog", "dog", "dog", "dog", "dog", "cat", "cat", "bunny"};
+
+	cout << eliminateDups(array3, 10) << endl;
+	/*for(int i = 0; i < 10; i++) {
 		cout << array3[i] << endl;
-	}
+	}*/
 	
 }
