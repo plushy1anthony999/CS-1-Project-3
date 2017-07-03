@@ -77,11 +77,17 @@ int locationOfMin(const string a[], int n) {
 
 // Moves an element at position "pos" to end of array, and returns its original position
 int moveToEnd(string a[], int n, int pos) {
-	if (pos > n - 1)
+	if(pos >= n) // since n is a number of elements, n should never be equal to pos
 		return -1;
+	if(pos == n - 1) // if the element to be moved is already at the end
+		return pos;
 	
 	for(int i = pos; i < n; i++) {
-		a[i] = a[i + 1];
+		if(i != n - 1) // handles each element except the last
+			a[i] = a[i + 1];
+		
+		else if(i == n - 1) // handles last element and prevents access to elements outside the array
+			a[i] = a[pos];
 	}
 	
 	return pos;
@@ -89,10 +95,13 @@ int moveToEnd(string a[], int n, int pos) {
 
 // TODO:
 // ?? What's the point of "n" here?
+// ?? Do I need to handle a negative pos being passed in?
 // Moves an element at position "pos" to start of array, and returns its original position
 int moveToBeginning(string a[], int n, int pos) {
 	if(pos >= n) // since n is a number of elements, n should never be equal to pos
 		return -1;
+	if(pos == 0) // if the element to be moved is already at the beginning
+		return pos;
 		
 	string stringToMove = a[pos];
 
@@ -108,6 +117,9 @@ int moveToBeginning(string a[], int n, int pos) {
 // n1 and n2 are the number of elements to consider from the arrays respectively
 // If both array's elements are equal up until one or both run out, return position of the last element in the shorter array
 int locateDifference(const string a1[], int n1, const string a2[], int n2) {
+	if(n1 < 0 || n2 < 0)
+		return -1;
+	
 	int indexToReadUpTo;
 	
 	n1 < n2 ? // uses the shorter value "n" as the stopping point for reading both arrays
@@ -123,31 +135,50 @@ int locateDifference(const string a1[], int n1, const string a2[], int n2) {
 // Modifies array so that it doesn't contain duplicate adjecent elements
 // Returns number of elements in the modified array
 int eliminateDups(string a[], int n) {
-	for(int i = 0; i < n; i++) {
-		if(a[i] == a[i + 1]) {
-			cout << "Duplicate element: " << a[i] << endl;
+	for(int i = 0; i < n - 1; i++) { // handles each element except the last
+		cout << "Duplicate element: " << a[i] << endl;
 
-			int numOfAdjacentDuplicates = 0; // If an element has duplicates next to it, how many duplicates are next to it?
-											 // i.e. if there are 4 "dog" elements, there are 3 duplicates/extras
-	
-			// Counts duplicates from the current i value until a non-duplicate value is found
-			for (int j = i; a[j] == a[j + 1]; j++)
-				numOfAdjacentDuplicates++;
+		int numOfAdjacentDuplicates = 0; // If an element has duplicates next to it, how many duplicates are next to it?
+										 // i.e. if there are 4 "dog" elements, there are 3 duplicates/extras
 
-			
-
-			cout << "numOfAdjacentDuplicates: " << numOfAdjacentDuplicates << endl;
-			i += numOfAdjacentDuplicates - 1; // Makes for loop just to the element after all the duplicates
-			
-			//// Number of duplicates have been found, so destroy duplicates and
-			//// shift elements to the right of the duplicates remaining
-			//for(int k = 0; k < numOfAdjacentDuplicates; k++) {
-			//	a[i + numOfAdjacentDuplicates + k] = a[i + numOfAdjacentDuplicates + k + 1];
-			//}
-		}
+		// Counts duplicates from the current i value until a non-duplicate value is found
+		for (int j = i; (j != n - 2) && (a[j] == a[j + 1]); j++)
+			numOfAdjacentDuplicates++;
+		
+		cout << numOfAdjacentDuplicates << endl;
 	}
+	// int numOfElementsDestroyed = 0;
+	
+	// for(int i = 0; i < n; i++) {
+	// 	if(i != n - 1) { // handles each element except the last
+	// 		if(a[i] == a[i + 1]) {
+	// 			cout << "Duplicate element: " << a[i] << endl;
+	// 			int numOfAdjacentDuplicates = 0; // If an element has duplicates next to it, how many duplicates are next to it?
+	// 											 // i.e. if there are 4 "dog" elements, there are 3 duplicates/extras
+				
+	// 			// Counts duplicates from the current i value until a non-duplicate value is found
+	// 			for(int j = i; j < n && a[j] == a[j + 1]; j++)
+	// 				numOfAdjacentDuplicates++;
 
-	return 0; // TODO: fix return value
+
+	// 			cout << "numOfAdjacentDuplicates: " << numOfAdjacentDuplicates << endl;
+
+				
+	// 			numOfElementsDestroyed += numOfAdjacentDuplicates;
+				
+	// 			//// Number of duplicates have been found, so destroy duplicates and
+	// 			//// shift elements to the right of the duplicates remaining
+	// 			//for(int k = 0; k < numOfAdjacentDuplicates; k++) {
+	// 			//	a[i + numOfAdjacentDuplicates + k] = a[i + numOfAdjacentDuplicates + k + 1];
+	// 			//}
+	// 		}
+	// 	}
+	// }
+	
+	// if(numOfElementsDestroyed == 0) // No duplicates found
+	// 	return 0;
+	
+	// return n - numOfElementsDestroyed; // Number of elements in modified array
 }
 
 int main() {
@@ -179,58 +210,74 @@ int main() {
 	assert(begin == 2 && end == 2);
 
 	// locationOfMin() Test
-	string locationOfMinArray[] = { "cat", "pig", "dog", "dog", "cat", "duck" };
-	assert(locationOfMin(locationOfMinArray, 6) == 0);
+	string locationOfMinArray1[] = { "cat", "pig", "dog", "dog", "cat", "duck" };
 	string locationOfMinArray2[] = { "duck", "pig", "dog", "dog", "cat", "duck" };
-	assert(locationOfMin(locationOfMinArray2, 6) == 4);
 	string locationOfMinArray3[] = { "cat", "bird", "dog", "dog", "cat", "duck" };
-	assert(locationOfMin(locationOfMinArray3, 6) == 1);
 	string locationOfMinArray4[] = { "pig", "pig", "dog", "dog", "dragon", "duck" };
+	
+	assert(locationOfMin(locationOfMinArray1, 6) == 0);
+	assert(locationOfMin(locationOfMinArray2, 6) == 4);
+	assert(locationOfMin(locationOfMinArray3, 6) == 1);
 	assert(locationOfMin(locationOfMinArray4, 2) == 0);
 
+
 	// moveToEnd() Test
-	string moveToEndArray[] = { "cat", "pig", "dog", "dog", "cat", "duck" };
-	string originalArray[] = { "cat", "pig", "dog", "dog", "cat", "duck" }; // used for testing, won't be modified by moveToEnd()
+	string moveToEndArray1[] = { "cat", "pig", "dog", "dog", "cat", "duck" };
+	string moveToEndArray2[] = { "cat", "pig", "dog", "dog", "cat", "duck" };
 
-	assert(moveToEnd(moveToEndArray, 6, 2) == 2);
-	assert(moveToEndArray[2] == "dog");
-	assert(moveToEndArray[3] == "cat");
-	assert(moveToEndArray[4] == "duck");
-	assert(moveToEndArray[5] == "dog");
-	assert(moveToEnd(moveToEndArray, 6, 5) == 5);
+	string originalMoveToEndArray[] = { "cat", "pig", "dog", "dog", "cat", "duck" }; // used for testing, won't be modified by moveToEnd()
 
-	//assert(moveToEndArray[0] == originalArray[0]);
-	//assert(moveToEndArray[1] == originalArray[1]);
-	//assert(moveToEndArray[2] == originalArray[2]);
-	//assert(moveToEndArray[3] == originalArray[3]);
-	//assert(moveToEndArray[4] == originalArray[4]);
-	//assert(moveToEndArray[5] == originalArray[5]);
-	///*for (int i = 0; i < 6; i++)
-	//	assert(moveToEndArray[i] == originalArray[i]);*/
+	assert(moveToEnd(moveToEndArray1, 6, 2) == 2); // Modify Test Array 1
+	assert(moveToEndArray1[2] == "dog");
+	assert(moveToEndArray1[3] == "cat");
+	assert(moveToEndArray1[4] == "duck");
+	assert(moveToEndArray1[5] == "dog");
+	
+	assert(moveToEnd(moveToEndArray2, 6, 5) == 5); // Modify Test Array 2
+	for (int i = 0; i < 6; i++) // Tests if Test Array 2 has been unchanged compared to the original array
+		assert(moveToEndArray2[i] == originalMoveToEndArray[i]);
+	
+	
+	// moveToBeginning() Test
+	string moveToBeginningArray1[] = {"dog", "cat", "pig", "bunny", "penguin"};
+	string moveToBeginningArray2[] = {"dog", "cat", "pig", "bunny", "penguin"};
+	
+	string originalMoveToBeginningArray[] = {"dog", "cat", "pig", "bunny", "penguin"}; // used for testing, won't be modified by moveToBeginning()
+	
+	assert(moveToBeginning(moveToBeginningArray1, 5, 3) == 3); // Modify Test Array 1;
+	assert(moveToBeginningArray1[0] == "bunny");
+	assert(moveToBeginningArray1[1] == "dog");
+	assert(moveToBeginningArray1[2] == "cat");
+	assert(moveToBeginningArray1[3] == "pig");
+	assert(moveToBeginningArray1[4] == "penguin");
 
-	//// moveToBeginning() Test
-	// const int NUM_OF_ELEMENTS = 5;
-	// string array[] = {"dog", "cat", "pig", "bunny", "penguin"};
-	//
-	// assert(moveToBeginning(array, NUM_OF_ELEMENTS, 4) == 4);
-	//
-	// for(int i = 0; i < 5; i++) {
-	// 	cout << array[i] << endl;
-	// }
-	//
-	// cout << "All tests succeeded" << endl;
-	//
+	assert(moveToBeginning(moveToBeginningArray2, 5, 0) == 0); // Modify Test Array 2;
+	for(int i = 0; i < 5; i++) 
+		assert(moveToBeginningArray2[i] == originalMoveToBeginningArray[i]); // Tests if Test Array 2 has been unchanged compared to the original array
+	
+	
 	// locateDifference() Test
-	// string array1[] = {"dog", "bunny", "pig", "duck", "bear", "goldfish"};
-	// string array2[] = {"dog", "bunny", "pig", "duck", "bear", "goldfish"};
-	
-	// cout << locateDifference(array1, 6, array2, 6) << endl;.
+	string locateDifferenceArray1[] = {"dog", "cat", "pig", "bunny", "penguin"}; // Test 1 //
+	string locateDifferenceArray2[] = {"dog", "cat", "cat", "bunny", "penguin"};
+	assert(locateDifference(locateDifferenceArray1, 3, locateDifferenceArray2, 5) == 2);
 
-	string array3[] = {"dog", "cat", "dog", "dog", "dog", "dog", "dog", "cat", "cat", "bunny"};
-
-	cout << eliminateDups(array3, 10) << endl;
-	/*for(int i = 0; i < 10; i++) {
-		cout << array3[i] << endl;
-	}*/
+	string locateDifferenceArray3[] = {"dog", "cat", "pig", "bunny", "penguin"}; // Test 2 //
+	string locateDifferenceArray4[] = {"dog"};
+	assert(locateDifference(locateDifferenceArray3, 5, locateDifferenceArray4, 1) == 1);
 	
+	string locateDifferenceArray5[] = {"dog", "cat", "pig", "bunny", "penguin"}; // Test 3 //
+	string locateDifferenceArray6[] = {"dog", "cat", "pig", "bunny", "penguin"};
+	assert(locateDifference(locateDifferenceArray5, 0, locateDifferenceArray6, 1) == 0);
+	
+	assert(locateDifference(locateDifferenceArray5, -5, locateDifferenceArray6, -1) == -1); // Handles bad arguments being passed
+	
+	// eliminateDups() Test
+	string eliminateDupsArray1[] = {"cat", "cat", "dog", "dog", "dog", "dog", "dog"};
+	string eliminateDupsArray2[] = {"cat", "dog", "bunny"};
+	
+	eliminateDups(eliminateDupsArray1, 7);
+	//assert(eliminateDups(eliminateDupsArray1, 7) == 4);
+	//assert(eliminateDups(eliminateDupsArray2, 3) == 0);
+	
+	cout << "All tests succeeded" << endl;
 }
