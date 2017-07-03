@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <cassert>
 
 using namespace std;
 
@@ -74,10 +75,97 @@ int locationOfMin(const string a[], int n) {
 	return smallestStringPos;
 }
 
+// TODO:
+// ?? Do I put the element after n or at end of array?
+// Moves an element at position "pos" to end of array, and returns its original position
+int moveToEnd(string a[], int n, int pos) {
+	//a[n] = 
+	
+	for(int i = pos + 1; i < n; i++) {
+		a[i - 1] = a[i];
+	}
+	
+}
+
+// TODO:
+// ?? What's the point of "n" here?
+// Moves an element at position "pos" to start of array, and returns its original position
+int moveToBeginning(string a[], int n, int pos) {
+	if(pos >= n) // since n is a number of elements, n should never be equal to pos
+		return -1;
+		
+	string stringToMove = a[pos];
+
+	for(int i = pos; i > 0; i--) {
+		a[i] = a[i - 1];
+	}
+	
+	a[0] = stringToMove;
+	return pos;
+}
+
+// Returns position of the first corresponding element from both arrays that isn't equal
+// n1 and n2 are the number of elements to consider from the arrays respectively
+// If both array's elements are equal up until one or both run out, return position of the last element in the shorter array
+int locateDifference(const string a1[], int n1, const string a2[], int n2) {
+	int indexToReadUpTo;
+	
+	n1 < n2 ? // uses the shorter value "n" as the stopping point for reading both arrays
+		indexToReadUpTo = n1 : 
+		indexToReadUpTo = n2;
+		
+	for(int i = 0; i < indexToReadUpTo; i++) {
+		if(a1[i] != a2[i])
+			return i;
+	}
+}
+
+// Modifies array so that it doesn't contain duplicate adjecent elements
+// Returns number of elements in the modified array
+int eliminateDups(string a[], int n) {
+	for(int i = 0; i < n; i++) {
+		if(a[i] == a[i + 1]) {
+			int numOfAdjacentDuplicates = 0; // If an element has duplicates next to it, how many duplicates are next to it?
+			
+			int j = i; // Track a second copy of i so that I don't have to modify the for-loop's i
+			while(a[j] == a[j + 1]) { // When a duplicate is found, count number of duplicates
+				numOfAdjacentDuplicates++;
+				j++;
+			}
+			
+			// Number of duplicates have been found, so destroy duplicates and
+			// shift elements to the right of the duplicates left
+			for(int k = 0; k < numOfAdjacentDuplicates; k++) {
+				a[i + numOfAdjacentDuplicates + k] = a[i + numOfAdjacentDuplicates + k + 1];
+			}
+		}
+	}
+	
+	return 
+}
+
 int main() {
-	string array[] = {"dog", "cato", "pig", "dog"};
-
-
-	cout << locationOfMin(array, 4) << endl;
-
+	// moveToBeginning() Test
+	// const int NUM_OF_ELEMENTS = 5;
+	// string array[] = {"dog", "cat", "pig", "bunny", "penguin"};
+	
+	// assert(moveToBeginning(array, NUM_OF_ELEMENTS, 4) == 4);
+	
+	// for(int i = 0; i < 5; i++) {
+	// 	cout << array[i] << endl;
+	// }
+	
+	// cout << "All tests succeeded" << endl;
+	
+	// locateDifference() Test
+	// string array1[] = {"dog", "bunny", "pig", "duck", "bear", "goldfish"};
+	// string array2[] = {"dog", "bunny", "pig", "duck", "bear", "goldfish"};
+	
+	// cout << locateDifference(array1, 6, array2, 6) << endl;
+	string array3[] = {"dog", "dog", "dog", "cat", "bunny", "dog", "dog", "cat", "cat", "bunny"};
+	cout << eliminateDups(array3, 4) << endl;
+	for(int i = 0; i < 10; i++) {
+		cout << array3[i] << endl;
+	}
+	
 }
