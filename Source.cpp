@@ -223,14 +223,14 @@ int main() {
 	// locateDifference() Test
 	// string array1[] = {"dog", "bunny", "pig", "duck", "bear", "goldfish"};
 	// string array2[] = {"dog", "bunny", "pig", "duck", "bear", "goldfish"};
-	//
+	
 	// cout << locateDifference(array1, 6, array2, 6) << endl;.
 
-	//string array3[] = {"dog", "cat", "dog", "dog", "dog", "dog", "dog", "cat", "cat", "bunny"};
+	string array3[] = {"dog", "cat", "dog", "dog", "dog", "dog", "dog", "cat", "cat", "bunny"};
 
-	//cout << eliminateDups(array3, 10) << endl;
-	///*for(int i = 0; i < 10; i++) {
-	//	cout << array3[i] << endl;
-	//}*/
+	cout << eliminateDups(array3, 10) << endl;
+	/*for(int i = 0; i < 10; i++) {
+		cout << array3[i] << endl;
+	}*/
 	
 }
