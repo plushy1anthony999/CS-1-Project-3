@@ -134,14 +134,12 @@ int eliminateDups(string a[], int n) {
 			}
 			
 			// Number of duplicates have been found, so destroy duplicates and
-			// shift elements to the right of the duplicates left
+			// shift elements to the right of the duplicates remaining
 			for(int k = 0; k < numOfAdjacentDuplicates; k++) {
 				a[i + numOfAdjacentDuplicates + k] = a[i + numOfAdjacentDuplicates + k + 1];
 			}
 		}
 	}
-	
-	return 
 }
 
 int main() {
