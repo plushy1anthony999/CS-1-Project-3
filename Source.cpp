@@ -132,53 +132,34 @@ int locateDifference(const string a1[], int n1, const string a2[], int n2) {
 	}
 }
 
+// TODO: Do I need to handle n being bigger than the array size?
 // Modifies array so that it doesn't contain duplicate adjecent elements
 // Returns number of elements in the modified array
 int eliminateDups(string a[], int n) {
-	for(int i = 0; i < n - 1; i++) { // handles each element except the last
-		cout << "Duplicate element: " << a[i] << endl;
+	if (n < 0)
+		return -1;
 
-		int numOfAdjacentDuplicates = 0; // If an element has duplicates next to it, how many duplicates are next to it?
-										 // i.e. if there are 4 "dog" elements, there are 3 duplicates/extras
+	int arraySize = n; // Track size of array as elements are removed
 
-		// Counts duplicates from the current i value until a non-duplicate value is found
-		for (int j = i; (j != n - 2) && (a[j] == a[j + 1]); j++)
-			numOfAdjacentDuplicates++;
-		
-		cout << numOfAdjacentDuplicates << endl;
+	for(int i = 0; i < arraySize; i++) { // by tracking the modified array's size, I won't read duplicate elements that were already moved
+		if (i == arraySize - 1) // handle last element, which doesn't need to be moved
+			break;
+
+		string firstElement = a[i]; // firstElement is the first value in a list of duplicate values 
+		int firstElementIndex = i;  // i.e. the first "dog" in a list of 4 consecutive "dog" elements
+
+		if (a[firstElementIndex] == a[firstElementIndex + 1]) {
+
+			// Counts duplicates from the current i value until a non-duplicate value is found
+			// Makes sure loop doesn't read past the array boundary
+			while ((firstElementIndex != arraySize - 1) && (a[firstElementIndex] == a[firstElementIndex + 1])) { 
+				moveToEnd(a, arraySize, firstElementIndex);
+				arraySize--;
+			}
+		}
 	}
-	// int numOfElementsDestroyed = 0;
-	
-	// for(int i = 0; i < n; i++) {
-	// 	if(i != n - 1) { // handles each element except the last
-	// 		if(a[i] == a[i + 1]) {
-	// 			cout << "Duplicate element: " << a[i] << endl;
-	// 			int numOfAdjacentDuplicates = 0; // If an element has duplicates next to it, how many duplicates are next to it?
-	// 											 // i.e. if there are 4 "dog" elements, there are 3 duplicates/extras
-				
-	// 			// Counts duplicates from the current i value until a non-duplicate value is found
-	// 			for(int j = i; j < n && a[j] == a[j + 1]; j++)
-	// 				numOfAdjacentDuplicates++;
 
-
-	// 			cout << "numOfAdjacentDuplicates: " << numOfAdjacentDuplicates << endl;
-
-				
-	// 			numOfElementsDestroyed += numOfAdjacentDuplicates;
-				
-	// 			//// Number of duplicates have been found, so destroy duplicates and
-	// 			//// shift elements to the right of the duplicates remaining
-	// 			//for(int k = 0; k < numOfAdjacentDuplicates; k++) {
-	// 			//	a[i + numOfAdjacentDuplicates + k] = a[i + numOfAdjacentDuplicates + k + 1];
-	// 			//}
-	// 		}
-	// 	}
-	// }
-	
-	// if(numOfElementsDestroyed == 0) // No duplicates found
-	// 	return 0;
-	
-	// return n - numOfElementsDestroyed; // Number of elements in modified array
+	return arraySize;
 }
 
 int main() {
@@ -272,12 +253,46 @@ int main() {
 	assert(locateDifference(locateDifferenceArray5, -5, locateDifferenceArray6, -1) == -1); // Handles bad arguments being passed
 	
 	// eliminateDups() Test
-	string eliminateDupsArray1[] = {"cat", "cat", "dog", "dog", "dog", "dog", "dog"};
+	string eliminateDupsArray1[] = { "cat", "cat", "dog", "dog", "dog", "dog", "dog" };
 	string eliminateDupsArray2[] = {"cat", "dog", "bunny"};
+	string eliminateDupsArray3[] = {"cat", "dog", "bunny", "bunny"};
+	string eliminateDupsArray4[] = { "cat", "cat", "dog", "dog", "dog", "dog", "cat" };
+	string eliminateDupsArray5[] = { "cat", "cat", "dog", "dog", "dog", "dog", "cat" };
+	string eliminateDupsArray6[] = {"cat", "cat", "dog", "dog", "dog", "cat", "cat", "bunny", "bunny"};
+	string eliminateDupsArray7[] = {"cat", "cat", "cat", "dog", "penguin", "bunny", "dog"};
 	
-	eliminateDups(eliminateDupsArray1, 7);
-	//assert(eliminateDups(eliminateDupsArray1, 7) == 4);
-	//assert(eliminateDups(eliminateDupsArray2, 3) == 0);
+	assert(eliminateDups(eliminateDupsArray1, 7) == 2);
+	assert(eliminateDups(eliminateDupsArray2, 3) == 3);
+	assert(eliminateDups(eliminateDupsArray3, 4) == 3);
+	assert(eliminateDups(eliminateDupsArray4, 7) == 3);
+	assert(eliminateDups(eliminateDupsArray5, -22) == -1);
+	assert(eliminateDups(eliminateDupsArray6, 9) == 4);
+	assert(eliminateDups(eliminateDupsArray7, 7) == 5);
+
+	assert(eliminateDupsArray1[0] == "cat"); // Array 1
+	assert(eliminateDupsArray1[1] == "dog");
+	assert(eliminateDupsArray2[0] == "cat"); // Array 2
+	assert(eliminateDupsArray2[1] == "dog");
+	assert(eliminateDupsArray2[2] == "bunny");
+	assert(eliminateDupsArray3[0] == "cat"); // Array 3
+	assert(eliminateDupsArray3[1] == "dog");
+	assert(eliminateDupsArray3[2] == "bunny");
+	assert(eliminateDupsArray4[0] == "cat"); // Array 4
+	assert(eliminateDupsArray4[1] == "dog");
+	assert(eliminateDupsArray4[2] == "cat");
+	assert(eliminateDupsArray5[0] == "cat"); // Array 5
+	assert(eliminateDupsArray5[1] == "cat");
+	assert(eliminateDupsArray5[2] == "dog");
+	assert(eliminateDupsArray5[3] == "dog");
+	assert(eliminateDupsArray5[4] == "dog");
+	assert(eliminateDupsArray5[5] == "dog");
+	assert(eliminateDupsArray5[6] == "cat");
+	assert(eliminateDupsArray6[0] == "cat"); // Array 6
+	assert(eliminateDupsArray6[1] == "dog");
+	assert(eliminateDupsArray6[2] == "cat");
+	assert(eliminateDupsArray6[3] == "bunny");
+	
+	
 	
 	cout << "All tests succeeded" << endl;
 }
