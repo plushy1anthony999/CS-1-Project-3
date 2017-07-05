@@ -67,9 +67,8 @@ int locationOfMin(const string a[], int n) {
 	int smallestStringPos = 0;
 	
 	for(int i = 0; i < n; i++) {
-		if(a[i] < a[smallestStringPos]) {
-			smallestStringPos = i;
-		}
+		if(a[i] < a[smallestStringPos])
+			smallestStringPos = i;		
 	}
 	
 	return smallestStringPos;
@@ -105,10 +104,9 @@ int moveToBeginning(string a[], int n, int pos) {
 		
 	string stringToMove = a[pos];
 
-	for(int i = pos; i > 0; i--) {
+	for(int i = pos; i > 0; i--)
 		a[i] = a[i - 1];
-	}
-	
+
 	a[0] = stringToMove;
 	return pos;
 }
@@ -161,6 +159,31 @@ int eliminateDups(string a[], int n) {
 
 	return arraySize;
 }
+
+// Returns true if al n2 elements of a2 appear in a1 in the same order, but the elements don't need to be consecutive
+// Return false otherwise
+bool subsequence(const string a1[], int n1, const string a2[], int n2) {
+	if (n1 < 0 || n2 < 0)
+		return false;
+	if (n2 == 0) // Asks "is there an empty sequence in a2?", which is always true
+		return true;
+	if (n1 < n2) // Could ask "do these 3 elements appear in this 2 element array," which would always be false
+		return false;
+
+	for (int i = 0; i < n2; i++) { // Counts through the sub-array i.e. a2
+		for (int k = 0; k < n1; k++) { // Counts through the main-array i.e. a1
+
+		}
+
+	}
+
+	//for (int i = 0; i < n1; i++) { // Counts through the main-array i.e. a1
+	//	for (int k = 0; k < n2; k++) { // Counts through the sub-array i.e. a2
+	//		if(a1[i] == a2[k])
+	//	}
+	//}
+}
+
 
 int main() {
 	// enumerate() Test	
@@ -291,8 +314,20 @@ int main() {
 	assert(eliminateDupsArray6[1] == "dog");
 	assert(eliminateDupsArray6[2] == "cat");
 	assert(eliminateDupsArray6[3] == "bunny");
+	assert(eliminateDupsArray7[0] == "cat"); // Array 7
+	assert(eliminateDupsArray7[1] == "dog");
+	assert(eliminateDupsArray7[2] == "penguin");
+	assert(eliminateDupsArray7[3] == "bunny");
+	assert(eliminateDupsArray7[4] == "dog");
 	
+
+	// subsequence() Test
+	string subsequenceArray1[] = { "cat", "dog", "dog", "cat", "bunny" };
+	string subsequenceArray2[] = { "cat", "penguin", "dog", "bunny" };
+
+	assert(subsequence(subsequenceArray1, -1, subsequenceArray2, 2) == false);
+
+
 	
-	
-	cout << "All tests succeeded" << endl;
+	cerr << "All tests succeeded" << endl;
 }
