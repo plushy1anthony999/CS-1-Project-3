@@ -170,20 +170,38 @@ bool subsequence(const string a1[], int n1, const string a2[], int n2) {
 	if (n1 < n2) // Could ask "do these 3 elements appear in this 2 element array," which would always be false
 		return false;
 
-	for (int i = 0; i < n2; i++) { // Counts through the sub-array i.e. a2
-		for (int k = 0; k < n1; k++) { // Counts through the main-array i.e. a1
+	int numOfMatches = 0;
+	int mainArrayCount = 0; // Used to make sure the main-array loop isn't reset to 0 during each tick of the sub-array loop
 
+	for (int i = 0; i < n2; i++) { // Counts through the sub-array i.e. a2
+		for (int k = mainArrayCount; k < n1; k++) { // Counts through the main-array i.e. a1
+
+			if (a2[i] == a1[k]) { // If a match is found in subarray, move on to next element in subarray
+				numOfMatches++;
+				mainArrayCount = k + 1;
+
+				if (numOfMatches == n2) // All matches found
+					return true;
+
+				break;
+			}
+
+			
 		}
 
 	}
 
-	//for (int i = 0; i < n1; i++) { // Counts through the main-array i.e. a1
-	//	for (int k = 0; k < n2; k++) { // Counts through the sub-array i.e. a2
-	//		if(a1[i] == a2[k])
-	//	}
-	//}
+	return false; // Not all matches found
 }
 
+
+// Takes 2 arrays that both have elements that are in nondecreasing order (1st element < 2nd element) and combines them into 
+// a new array with elements in nondecreasing order. If either array doesn't have elements in nondecreasing order, or if the 
+// the length of the resulting array is above max, then return -1. Otherwise, return the length of the new array
+int makeMerger(const string a1[], int n1, const string a2[], int n2, string result[], int max) {
+	
+	return 0;
+}
 
 int main() {
 	// enumerate() Test	
@@ -192,7 +210,7 @@ int main() {
 	assert(enumerate(enumerateArray, 1, "cat") == 1);
 	assert(enumerate(enumerateArray, 4, "pig") == 1);
 	assert(enumerate(enumerateArray, 4, "clown") == 0);
-
+	cout << ("cersei" > "jon") << endl;
 	// locate() Test
 	string locateArray[] = { "cat", "cat", "pig", "bunny" };
 	assert(locate(locateArray, 1, "cat") == 0);
@@ -324,8 +342,31 @@ int main() {
 	// subsequence() Test
 	string subsequenceArray1[] = { "cat", "dog", "dog", "cat", "bunny" };
 	string subsequenceArray2[] = { "cat", "penguin", "dog", "bunny" };
+	string subsequenceArray3[] = { "cat", "cat", "cat", "dog", "cat" };
+	string subsequenceArray4[] = { "cat", "cat", "cat", "dog" };
+	string subsequenceArray5[] = { "cat", "cat", "cat", "dog", "bunny", "bunny" };
+	string subsequenceArray6[] = { "cat", "cat", "dog"};
+	string subsequenceArray7[] = { "dog", "dog", "cat", "cat", "dog" };
+	string subsequenceArray8[] = { "cat", "cat", "dog" };
+	string subsequenceArray9[] = { "dog", "dog", "cat", "dog", "bunny" };
+	string subsequenceArray10[] = { "bunny", "cat", "dog" };
+	string subsequenceArray11[] = { "dog", "dog", "cat", "dog", "bunny", "dog"};
+	string subsequenceArray12[] = { "bunny", "bunny", "dog" };
+	string subsequenceArray13[] = { "dog", "pig", "cat", "dog", "bunny", "dog" };
+	string subsequenceArray14[] = { "pig", "cat", "bunny", "dog", "dog" };
 
 	assert(subsequence(subsequenceArray1, -1, subsequenceArray2, 2) == false);
+	assert(subsequence(subsequenceArray1, 5, subsequenceArray2, 4) == false);
+	assert(subsequence(subsequenceArray3, 5, subsequenceArray4, 4) == true);
+	assert(subsequence(subsequenceArray3, 3, subsequenceArray4, 4) == false);
+	assert(subsequence(subsequenceArray3, 3, subsequenceArray4, 4) == false);
+	assert(subsequence(subsequenceArray5, 3, subsequenceArray6, 3) == false);
+	assert(subsequence(subsequenceArray5, 4, subsequenceArray6, 3) == true);
+	assert(subsequence(subsequenceArray7, 5, subsequenceArray8, 3) == true);
+	assert(subsequence(subsequenceArray9, 5, subsequenceArray10, 3) == false);
+	assert(subsequence(subsequenceArray11, 6, subsequenceArray12, 3) == false);
+	assert(subsequence(subsequenceArray13, 6, subsequenceArray14, 5) == false);
+
 
 
 	
