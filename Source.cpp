@@ -1,4 +1,7 @@
 #include <iostream>
+#include <vector>
+#include <memory>
+#include <array>
 #include <string>
 #include <cassert>
 
@@ -7,7 +10,7 @@ using namespace std;
 /* 
 	Project will defne functions that manipulate arrays that each take in at least the arguments: 
 		1. string[]
-		2. number of elements to consider (can't be negative)
+		2. "n", a number of elements to consider (can't be negative)
 	If argument string "target" is used, target can be blank, i.e. ""
 */
 
@@ -185,10 +188,7 @@ bool subsequence(const string a1[], int n1, const string a2[], int n2) {
 
 				break;
 			}
-
-			
 		}
-
 	}
 
 	return false; // Not all matches found
@@ -199,8 +199,34 @@ bool subsequence(const string a1[], int n1, const string a2[], int n2) {
 // a new array with elements in nondecreasing order. If either array doesn't have elements in nondecreasing order, or if the 
 // the length of the resulting array is above max, then return -1. Otherwise, return the length of the new array
 int makeMerger(const string a1[], int n1, const string a2[], int n2, string result[], int max) {
-	
-	return 0;
+	if (n1 + n2 > max)
+		return -1;
+
+	// Checks if the array's elements are in nondecreasing order
+	for (int i = 0; i < n1 - 1; i++) { 
+		if (a1[i] > a1[i + 1])
+			return -1;
+	}
+	for (int i = 0; i < n2 - 1; i++) {
+		if (a2[i] > a2[i + 1])
+			return -1;
+	}
+
+	// Construct unordered result array
+	for (int i = 0; i < n1; i++)  // Append all value of a1[] to result[]
+		result[i] = a1[i];
+	for (int i = 0; i < n2; i++)  // Append all value of a2[] to result[]
+		result[n1 + i] = a2[i];
+
+	for (int i = 0; i < n1 + n2; i++) {
+		moveToBeginning(result, n1 + n2, locationOfMin(result + i, n1 + n2 - i));
+	}
+
+	for (int i = 0; i < n1 + n2; i++)
+		cout << result[i] << endl;
+	cout << endl;
+
+	return n1 + n2; // TODO: change this
 }
 
 int main() {
@@ -209,8 +235,86 @@ int main() {
 	assert(enumerate(enumerateArray, 4, "cat") == 2);
 	assert(enumerate(enumerateArray, 1, "cat") == 1);
 	assert(enumerate(enumerateArray, 4, "pig") == 1);
-	assert(enumerate(enumerateArray, 4, "clown") == 0);
-	cout << ("cersei" > "jon") << endl;
+	assert(enumerate(enumerateArray, 4, "clown") == 0);	
+
+	//enumerateVector.push_back(unique_ptr<string[]>(new string[4]));
+	//cout << enumerateVector[0].get()->max_size() << endl;
+	//cout << unique_ptr<vector<string>>(new vector<string>{ "dog" }).get()->capacity() << endl;
+
+
+	/*for (int arrayLength = 0; arrayLength < 7; arrayLength++) {
+		enumerateVector.push_back(unique_ptr<string[]>(new string[arrayLength]));
+
+		for (int i = 0; i < arrayLength; i++) {
+			cout << enumerateVector[i].get()->length() << endl;
+		}
+	}*/
+
+
+	//// Create all possible vectors for testing enumerate(), using vectors from size 0 - 4
+	//struct VectorContainer {  // Will hold all vectors used for testing enumerate()
+	//	vector<vector<string>> size0_vector;
+	//	vector<vector<string>> size1_vectors;
+	//	vector<vector<string>> size2_vectors;
+	//	vector<vector<string>> size3_vectors;
+	//	vector<vector<string>> size4_vectors;
+
+	//	auto& operator[](int index) {
+	//		switch (index) {
+	//			case 0:
+	//				return size0_vector;
+	//			case 1:
+	//				return size1_vectors;
+	//			case 2:
+	//				return size2_vectors;
+	//			case 3:
+	//				return size3_vectors;
+	//			case 4:
+	//				return size4_vectors;
+	//		}
+	//	};
+	//} vectorContainer;
+
+	//const int MAX_VECTOR_SIZE = 4;
+
+	//cout << vectorContainer[0].size() << endl;
+
+	//for (int vectorSize = 0; vectorSize < MAX_VECTOR_SIZE; vectorSize++) { // Create vectors from size 0 - 4
+	//	vectorContainer[vectorSize] = vector<string>();
+	//	vectorContainer[vectorSize].reserve(vectorSize);
+	//	
+	//	if(vectorSize > 0)
+	//		for (int i = vectorSize - 1; i < vectorSize; i++) { // Goes through the current vector and pushes strings until its capacity is filled
+	//			if (vectorSize == 1)
+	//				vectorContainer[vectorSize].push_back(enumerateArray[i]);
+	//			else {
+	//				vector<string> currentVector = vectorContainer[vectorSize];
+
+	//			}
+	//		}
+	//}
+
+	//for (int i = 0; i < 5; i++)
+	//	for (string animal : vectorContainer[i])
+	//		cout << animal << endl;
+
+
+	/*vectorContainter.size0_vector = vector<string>({ "dog", "cat", "penguin" });
+	vectorContainter.size1_vector = vector<string>({ "dog", "duck", "penguin" });
+	vectorContainter.size2_vector = vector<string>({ "dog", "dog", "penguin" });
+	vectorContainter.size3_vector = vector<string>({ "dog", "cat", "pig" });
+	vectorContainter.size4_vector = vector<string>({ "dog", "horse", "penguin" });
+
+	for (int i = 0; i < 5; i++) {
+		cout << "Loop: " << i << endl;
+		cout << "------" << endl;
+		for (int k = 0; k < 3; k++) {
+			cout << vectorContainter[i][k] << endl;
+		}
+		cout << endl;
+	}*/
+
+
 	// locate() Test
 	string locateArray[] = { "cat", "cat", "pig", "bunny" };
 	assert(locate(locateArray, 1, "cat") == 0);
@@ -368,7 +472,35 @@ int main() {
 	assert(subsequence(subsequenceArray13, 6, subsequenceArray14, 5) == false);
 
 
+	// makeMerger() Test
+	string makeMergerArray1[] = { "cat", "dog", "pig", "cat" };
+	string makeMergerArray2[] = { "cat", "dog", "pig", "tiger" };
+	string makeMergerArray3[] = { "cat", "dog", "pig", "tiger" };
+	string makeMergerArray4[] = { "cat", "dog", "pig", "reptile" };
+	string makeMergerArray5[] = { "antelope", "dog", "pig", "tiger" };
+	string makeMergerArray6[] = { "bat", "cat", "dog", "pig", "tiger" };
 
+	string makeMergerArrayResult1[8];
+	string makeMergerArrayResult2[8];
+	string makeMergerArrayResult3[9];
+
+	assert(makeMerger(makeMergerArray1, 4, makeMergerArray2, 4, makeMergerArrayResult1, 8) == -1);
+	assert(makeMerger(makeMergerArray3, 4, makeMergerArray4, 4, makeMergerArrayResult2, 8) == 8);
+	assert(makeMerger(makeMergerArray3, 4, makeMergerArray4, 4, makeMergerArrayResult2, 7) == -1);
+	assert(makeMerger(makeMergerArray5, 4, makeMergerArray6, 5, makeMergerArrayResult3, 9) == 9);
 	
+	for (int i = 0; i < 4; i++) 
+		assert(makeMergerArrayResult2[i] == makeMergerArray3[i]);
+	for (int k = 0; k < 4; k++) 
+		assert(makeMergerArrayResult2[k + 4] == makeMergerArray4[k]);
+
+	//for (string i : makeMergerArrayResult1)
+	//	cout << i << endl;
+	//for (string i : makeMergerArrayResult2)
+	//	cout << i << endl;
+	//cout << endl;
+	//for (string i : makeMergerArrayResult3)
+	//	cout << i << endl;
+
 	cerr << "All tests succeeded" << endl;
 }
