@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <map>
 #include <memory>
 #include <array>
 #include <string>
@@ -21,23 +22,22 @@ int enumerate(const string a[], int n, string target) {
 		return -1;
 
 	int numOfMatchedStrings = 0;
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) 
 		if (a[i] == target)
 			numOfMatchedStrings++;
-	}
+
 
 	return numOfMatchedStrings;
 }
 
-// return the position(starting at 0) of the first string in the array that matches "target"
+// Return the position(starting at 0) of the first string in the array that matches "target"
 int locate(const string a[], int n, string target) {
 	if (n < 0)
 		return -1;
 
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) 
 		if (a[i] == target)
 			return i;
-	}
 
 	return -1; // No strings in array matched target
 }
@@ -54,10 +54,9 @@ bool locateSequence(const string a[], int n, string target, int& begin, int& end
 		return false; // No matches found using locate()
 
 
-	for (int i = begin; i < n; i++) {
+	for (int i = begin; i < n; i++) 
 		if (a[i] == target) 
 			end = i; // Will update variable for each match, ending with the position of the last match
-	}
 
 	return true; // At least one match found
 }
@@ -79,6 +78,8 @@ int locationOfMin(const string a[], int n) {
 
 // Moves an element at position "pos" to end of array, and returns its original position
 int moveToEnd(string a[], int n, int pos) {
+	if (n < 0)
+		return -1;
 	if(pos >= n) // since n is a number of elements, n should never be equal to pos
 		return -1;
 	if(pos == n - 1) // if the element to be moved is already at the end
@@ -95,11 +96,10 @@ int moveToEnd(string a[], int n, int pos) {
 	return pos;
 }
 
-// TODO:
-// ?? What's the point of "n" here?
-// ?? Do I need to handle a negative pos being passed in?
 // Moves an element at position "pos" to start of array, and returns its original position
 int moveToBeginning(string a[], int n, int pos) {
+	if (pos < 0)
+		return -1;
 	if(pos >= n) // since n is a number of elements, n should never be equal to pos
 		return -1;
 	if(pos == 0) // if the element to be moved is already at the beginning
@@ -133,7 +133,6 @@ int locateDifference(const string a1[], int n1, const string a2[], int n2) {
 	}
 }
 
-// TODO: Do I need to handle n being bigger than the array size?
 // Modifies array so that it doesn't contain duplicate adjecent elements
 // Returns number of elements in the modified array
 int eliminateDups(string a[], int n) {
@@ -199,18 +198,20 @@ bool subsequence(const string a1[], int n1, const string a2[], int n2) {
 // a new array with elements in nondecreasing order. If either array doesn't have elements in nondecreasing order, or if the 
 // the length of the resulting array is above max, then return -1. Otherwise, return the length of the new array
 int makeMerger(const string a1[], int n1, const string a2[], int n2, string result[], int max) {
+	if (n1 < 0 || n2 < 0)
+		return -1;
 	if (n1 + n2 > max)
 		return -1;
 
 	// Checks if the array's elements are in nondecreasing order
-	for (int i = 0; i < n1 - 1; i++) { 
+	for (int i = 0; i < n1 - 1; i++) 
 		if (a1[i] > a1[i + 1])
 			return -1;
-	}
-	for (int i = 0; i < n2 - 1; i++) {
+	for (int i = 0; i < n2 - 1; i++) 
 		if (a2[i] > a2[i + 1])
 			return -1;
-	}
+
+	int resultArraySize = n1 + n2;
 
 	// Construct unordered result array
 	for (int i = 0; i < n1; i++)  // Append all value of a1[] to result[]
@@ -218,16 +219,37 @@ int makeMerger(const string a1[], int n1, const string a2[], int n2, string resu
 	for (int i = 0; i < n2; i++)  // Append all value of a2[] to result[]
 		result[n1 + i] = a2[i];
 
-	for (int i = 0; i < n1 + n2; i++) {
-		moveToBeginning(result, n1 + n2, locationOfMin(result + i, n1 + n2 - i));
+	// Finds smallest string and moves it to the front, then looks for the smallest string 
+	// in the same array while ignoring strings at the beginning that were already looked at
+	for (int i = 0; i < resultArraySize; i++)
+		// Uses pointer arithmetic to avoid looking at strings that were already checked
+		moveToBeginning(result + i, resultArraySize, locationOfMin(result + i, resultArraySize - i));
+
+	return resultArraySize;
+}
+
+
+// Rearranges a string array so that all strings that are smaller than the divider are at the start,
+// and everything equal or greater goes at the end of the array. Returns the position of the 1st element
+// equal or greater than the divider, or n if there is none
+int divide(string a[], int n, string divider) {
+	if (n < 0)
+		return -1;
+
+	int firstElementEqualOrGreaterThanDivider = n;
+
+	for (int i = 0; i < n; i++) {
+		if (a[i] < divider)
+			moveToBeginning(a, n, i);
+
+		else if (firstElementEqualOrGreaterThanDivider == n) // The first element >= divider has been found
+			firstElementEqualOrGreaterThanDivider = i;
 	}
 
-	for (int i = 0; i < n1 + n2; i++)
-		cout << result[i] << endl;
-	cout << endl;
-
-	return n1 + n2; // TODO: change this
+	
+	return firstElementEqualOrGreaterThanDivider;
 }
+
 
 int main() {
 	// enumerate() Test	
@@ -274,6 +296,8 @@ int main() {
 	//		}
 	//	};
 	//} vectorContainer;
+
+	//auto mappedStrings = map<int, int>;
 
 	//const int MAX_VECTOR_SIZE = 4;
 
@@ -350,6 +374,7 @@ int main() {
 	// moveToEnd() Test
 	string moveToEndArray1[] = { "cat", "pig", "dog", "dog", "cat", "duck" };
 	string moveToEndArray2[] = { "cat", "pig", "dog", "dog", "cat", "duck" };
+	string moveToEndArray3[] = { "cat", "dog", "cat", "duck" };
 
 	string originalMoveToEndArray[] = { "cat", "pig", "dog", "dog", "cat", "duck" }; // used for testing, won't be modified by moveToEnd()
 
@@ -362,6 +387,9 @@ int main() {
 	assert(moveToEnd(moveToEndArray2, 6, 5) == 5); // Modify Test Array 2
 	for (int i = 0; i < 6; i++) // Tests if Test Array 2 has been unchanged compared to the original array
 		assert(moveToEndArray2[i] == originalMoveToEndArray[i]);
+
+	assert(moveToEnd(moveToEndArray3, 4, 1) == 1);
+
 	
 	
 	// moveToBeginning() Test
@@ -479,28 +507,81 @@ int main() {
 	string makeMergerArray4[] = { "cat", "dog", "pig", "reptile" };
 	string makeMergerArray5[] = { "antelope", "dog", "pig", "tiger" };
 	string makeMergerArray6[] = { "bat", "cat", "dog", "pig", "tiger" };
+	string makeMergerArray7[] = { "bat" };
+	string makeMergerArray8[] = { "cat", "dog", "lamb", "tiger" };
 
 	string makeMergerArrayResult1[8];
 	string makeMergerArrayResult2[8];
 	string makeMergerArrayResult3[9];
+	string makeMergerArrayResult4[5];
 
-	assert(makeMerger(makeMergerArray1, 4, makeMergerArray2, 4, makeMergerArrayResult1, 8) == -1);
-	assert(makeMerger(makeMergerArray3, 4, makeMergerArray4, 4, makeMergerArrayResult2, 8) == 8);
+	assert(makeMerger(makeMergerArray1, 4, makeMergerArray2, 4, makeMergerArrayResult1, 8) == -1); // Array 1
+	assert(makeMerger(makeMergerArray3, 4, makeMergerArray4, 4, makeMergerArrayResult2, 8) == 8);  // Array 2
 	assert(makeMerger(makeMergerArray3, 4, makeMergerArray4, 4, makeMergerArrayResult2, 7) == -1);
-	assert(makeMerger(makeMergerArray5, 4, makeMergerArray6, 5, makeMergerArrayResult3, 9) == 9);
-	
-	for (int i = 0; i < 4; i++) 
-		assert(makeMergerArrayResult2[i] == makeMergerArray3[i]);
-	for (int k = 0; k < 4; k++) 
-		assert(makeMergerArrayResult2[k + 4] == makeMergerArray4[k]);
+	assert(makeMergerArrayResult2[0] == "cat");
+	assert(makeMergerArrayResult2[1] == "cat");
+	assert(makeMergerArrayResult2[2] == "dog");
+	assert(makeMergerArrayResult2[3] == "dog");
+	assert(makeMergerArrayResult2[4] == "pig");
+	assert(makeMergerArrayResult2[5] == "pig");
+	assert(makeMergerArrayResult2[6] == "reptile");
+	assert(makeMergerArrayResult2[7] == "tiger");
+	assert(makeMerger(makeMergerArray5, 4, makeMergerArray6, 5, makeMergerArrayResult3, 9) == 9);  // Array 3
+	assert(makeMergerArrayResult3[0] == "antelope");
+	assert(makeMergerArrayResult3[1] == "bat");
+	assert(makeMergerArrayResult3[2] == "cat");
+	assert(makeMergerArrayResult3[3] == "dog");
+	assert(makeMergerArrayResult3[4] == "dog");
+	assert(makeMergerArrayResult3[5] == "pig");
+	assert(makeMergerArrayResult3[6] == "pig");
+	assert(makeMergerArrayResult3[7] == "tiger");
+	assert(makeMergerArrayResult3[8] == "tiger");
+	assert(makeMerger(makeMergerArray7, 1, makeMergerArray8, 4, makeMergerArrayResult4, 5) == 5);  // Array 4
+	assert(makeMergerArrayResult4[0] == "bat");
+	assert(makeMergerArrayResult4[1] == "cat");
+	assert(makeMergerArrayResult4[2] == "dog");
+	assert(makeMergerArrayResult4[3] == "lamb");
+	assert(makeMergerArrayResult4[4] == "tiger");
+	assert(makeMerger(makeMergerArray7, 0, makeMergerArray8, 4, makeMergerArrayResult4, 4) == 4);
+	assert(makeMerger(makeMergerArray7, 0, makeMergerArray8, 0, makeMergerArrayResult4, 4) == 0);
+	assert(makeMergerArrayResult4[0] == "cat");
+	assert(makeMergerArrayResult4[1] == "dog");
+	assert(makeMergerArrayResult4[2] == "lamb");
+	assert(makeMergerArrayResult4[3] == "tiger");
 
-	//for (string i : makeMergerArrayResult1)
-	//	cout << i << endl;
-	//for (string i : makeMergerArrayResult2)
-	//	cout << i << endl;
-	//cout << endl;
-	//for (string i : makeMergerArrayResult3)
-	//	cout << i << endl;
+
+	// divide() Test
+	string divideArray1[] = { "cat" };
+	string divideArray2[] = { "cat", "dog", "cat", "dog", "pig", "bunny" };
+	string divideArray3[] = { "yak", "donkey", "bird", "gorilla", "yak" };
+	
+	assert(divide(divideArray1, 1, "bunny") == 0); // Array 1
+	assert(divide(divideArray1, 1, "dog") == 1);
+	assert(divide(divideArray1, 1, "") == 0);
+	assert(divide(divideArray1, -4, "") == -1);
+	assert(divideArray1[0] == "cat");
+	assert(divide(divideArray2, 6, "") == 0); // Array 2
+	assert(divideArray2[0] == "cat");
+	assert(divideArray2[1] == "dog");
+	assert(divideArray2[2] == "cat");
+	assert(divideArray2[3] == "dog");
+	assert(divideArray2[4] == "pig");
+	assert(divideArray2[5] == "bunny");
+	assert(divide(divideArray2, 6, "dog") == 1); 
+	assert(divideArray2[0] == "bunny");
+	assert(divideArray2[1] == "cat");
+	assert(divideArray2[2] == "cat");
+	assert(divideArray2[3] >= "dog");
+	assert(divideArray2[4] >= "dog");
+	assert(divideArray2[5] >= "dog");
+	assert(divide(divideArray3, 5, "monkey") == 0); // Array 3
+	assert(divideArray3[0] < "monkey");
+	assert(divideArray3[1] < "monkey");
+	assert(divideArray3[2] < "monkey");
+	assert(divideArray3[3] >= "monkey");
+	assert(divideArray3[4] >= "monkey");
+	
+	
 
 	cerr << "All tests succeeded" << endl;
 }
